@@ -1,0 +1,15 @@
+---
+
+- name: ensure scanbd.service is started and enabled at boot
+  service:
+    name: scanbd
+    state: started
+    enabled: true
+
+- name: ensure scanbm.socket is started and enabled at boot
+  service:
+    name: scanbm.socket
+    state: started
+    enabled: true
+
+...

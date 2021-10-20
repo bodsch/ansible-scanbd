@@ -1,0 +1,9 @@
+---
+
+scanbd_version: '1.5.1'
+
+scanbd_download_url: https://sourceforge.net/projects/scanbd/files/releases/scanbd-{{ scanbd_version }}.tgz/download
+
+scanbd_dbus_user: root
+
+...

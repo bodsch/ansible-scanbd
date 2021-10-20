@@ -1,0 +1,13 @@
+---
+
+- include_tasks: prepare.yaml
+
+- include_tasks: build.yaml
+  when:
+    - not __stat_present_scanbd.stat.exists
+
+- include_tasks: configure.yaml
+
+- include_tasks: service.yaml
+
+...

@@ -1,0 +1,42 @@
+---
+
+- name: install dbus.conf file
+  template:
+    src: scanbd_dbus.conf.j2
+    dest: /etc/dbus-1/system.d/scanbd_dbus.conf
+    owner: root
+    group: root
+    mode: 0755
+  notify: daemon reload
+
+- name: install systemd unit file for scanbd.service
+  template:
+    src: systemd/scanbd.service.j2
+    dest: /lib/systemd/system/scanbd.service
+    mode: 0755
+  notify: daemon reload
+
+- name: install systemd unit file for scanbm@.service
+  template:
+    src: systemd/scanbm@.service.j2
+    dest: /lib/systemd/system/scanbm@.service
+    mode: 0755
+  notify: daemon reload
+
+- name: configure scanbd
+  template:
+    src: scanbd.conf.j2
+    dest: /usr/local/etc/scanbd/scanbd.conf
+    mode: 0644
+    backup: true
+  notify: restart scanbd
+
+- name: configure scanbd for cannon scanner
+  template:
+    src: scanner.d/canon.conf.j2
+    dest: /usr/local/etc/scanbd/scanner.d/canon.conf
+    mode: 0644
+    backup: true
+  notify: restart scanbd
+
+...

@@ -1,0 +1,58 @@
+*** scanbd/1.5.1/src/scanbd/config.c    Wed Apr 19 07:53:25 2017
+--- scanbd/1.5.1/src/scanbd_fixed/config.c      Tue Oct 19 05:39:59 2021
+***************
+*** 114,120 ****
+
+      // cd into directory where scanbd.conf lives
+
+!     strncpy(config_file, config_file_name, PATH_MAX);
+
+      scanbd_conf_dir = dirname(config_file);
+      assert(scanbd_conf_dir);
+--- 114,120 ----
+
+      // cd into directory where scanbd.conf lives
+
+!     strncpy(config_file, config_file_name, PATH_MAX -1);
+
+      scanbd_conf_dir = dirname(config_file);
+      assert(scanbd_conf_dir);
+diff -crwbB scanbd/1.5.1/src/scanbd/scanbd.c scanbd/1.5.1/src/scanbd_fixed/scanbd.c
+*** scanbd/1.5.1/src/scanbd/scanbd.c    Wed Apr 19 07:53:25 2017
+--- scanbd/1.5.1/src/scanbd_fixed/scanbd.c      Tue Oct 19 05:39:08 2021
+***************
+*** 351,357 ****
+
+      // We do this here as debugging is only completely initialized here
+      char prog_path[PATH_MAX] = "";
+!     strncpy(prog_path, argv[0], PATH_MAX);
+      char *my_name = basename(prog_path);
+      if ( strncmp(my_name, NAME_MANAGER_MODE, PATH_MAX) == 0 ) {
+          slog(SLOG_INFO, "We are called as %s - setting manager-mode", NAME_MANAGER_MODE);
+--- 351,357 ----
+
+      // We do this here as debugging is only completely initialized here
+      char prog_path[PATH_MAX] = "";
+!     strncpy(prog_path, argv[0], PATH_MAX -1);
+      char *my_name = basename(prog_path);
+      if ( strncmp(my_name, NAME_MANAGER_MODE, PATH_MAX) == 0 ) {
+          slog(SLOG_INFO, "We are called as %s - setting manager-mode", NAME_MANAGER_MODE);
+diff -crwbB scanbd/1.5.1/src/scanbd/slog.c scanbd/1.5.1/src/scanbd_fixed/slog.c
+*** scanbd/1.5.1/src/scanbd/slog.c      Wed Apr 19 07:53:25 2017
+--- scanbd/1.5.1/src/scanbd_fixed/slog.c        Tue Oct 19 05:39:22 2021
+***************
+*** 30,36 ****
+  static int isInitialized = 0;
+
+  void slog_init(const char *string) {
+!     strncpy(lpre, string, LINE_MAX);
+      isInitialized = 1;
+  }
+
+--- 30,36 ----
+  static int isInitialized = 0;
+
+  void slog_init(const char *string) {
+!     strncpy(lpre, string, LINE_MAX -1);
+      isInitialized = 1;
+  }

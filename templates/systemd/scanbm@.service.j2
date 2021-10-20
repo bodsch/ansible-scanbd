@@ -1,0 +1,12 @@
+#  scanbd - KMUX scanner button daemon
+
+[Unit]
+Description=Scanner Service
+Requires=scanbm.socket
+
+[Service]
+ExecStart=/usr/local/sbin/scanbm --config=/usr/local/etc/scanbd/scanbd.conf
+User=daemon
+Group=scanner
+StandardInput=socket
+Environment=SANE_CONFIG_DIR=/usr/local/etc/scanbd

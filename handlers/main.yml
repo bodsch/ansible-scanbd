@@ -1,0 +1,15 @@
+---
+
+- name: restart scanbd
+  service:
+    name: scanbd
+    state: restarted
+
+- name: daemon reload
+  systemd:
+    daemon_reload: true
+    force: true
+  notify:
+    - restart scanbd
+
+...

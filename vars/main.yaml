@@ -1,0 +1,18 @@
+---
+
+scanbd_build_dependencies:
+  - build-essential
+  - file
+  - gettext
+  - git
+  - libusb-dev
+  - libconfuse-dev
+  - libdbus-1-dev
+  - libudev-dev
+  - libsane-dev
+
+
+destination_directory: /usr/local/share/scanner
+environment_file: /usr/local/etc/scanbd/scanbd.env
+
+...

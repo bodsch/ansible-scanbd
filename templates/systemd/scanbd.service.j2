@@ -1,0 +1,19 @@
+#  scanbd - KMUX scanner button daemon
+
+[Unit]
+Description=Scanner button polling Service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/scanbd --foreground --config=/usr/local/etc/scanbd/scanbd.conf
+#ExecReload=?
+Environment=SANE_CONFIG_DIR=/usr/local/etc/sane.d/
+StandardInput=null
+StandardOutput=syslog
+StandardError=syslog
+#NotifyAccess=?
+
+[Install]
+WantedBy=multi-user.target
+Also=scanbm.socket
+Alias=dbus-de.kmux.scanbd.server.service

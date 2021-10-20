@@ -1,0 +1,48 @@
+
+device canon {
+  # the device matching string
+  filter = "^genesys.*" # regex
+
+  # the device description
+  desc = "Canon LIDE"
+
+  # 1. Button: PDF | SCANBD_ACTION=file
+  action file {
+    filter = "^file.*"
+    desc   = "Scan to file"
+    script = "action.sh"
+  }
+
+  # 2. Button: AUTO SCAN | SCANBD_ACTION=scan
+  action scan {
+    filter = "^scan.*"
+    numerical-trigger {
+      from-value = 1
+      to-value   = 0
+    }
+    desc   = "Scan to file"
+    script = "action.sh"
+  }
+
+  # 3. Button: COPY | SCANBD_ACTION=copy
+  action copy {
+    filter = "^copy$"
+    string-trigger {
+      from-value  = ""
+      to-value    = "^copy.*"
+    }
+    desc   = "Copy to printer"
+    script = "action.sh"
+  }
+
+  # 4. Button: EMAIL | SCANBD_ACTION=email
+  action email {
+    filter = "^email$"
+    string-trigger {
+      from-value  = ""
+      to-value    = "^email.*"
+    }
+    desc   = "Scan to email"
+    script = "action.sh"
+  }
+}

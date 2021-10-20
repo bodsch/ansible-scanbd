@@ -1,0 +1,84 @@
+---
+
+- block:
+    - name: install build environment
+      package:
+        name: "{{ scanbd_build_dependencies }}"
+        state: present
+
+    - name: create local directory
+      delegate_to: localhost
+      become: false
+      file:
+        path: /tmp/scanbd/{{ scanbd_version }}
+        state: directory
+        mode: 0755
+
+    - name: create source directory
+      file:
+        path: /usr/src/scanbd
+        state: directory
+        mode: 0755
+
+    - name: "download 'scanbd-{{ scanbd_version }}.tgz' to local folder"
+      delegate_to: localhost
+      become: false
+      get_url:
+        url: "{{ scanbd_download_url }}"
+        dest: "/tmp/scanbd/{{ scanbd_version }}"
+      register: _download_archive
+      until: _download_archive is succeeded
+      retries: 5
+      delay: 2
+      # run_once: true # <-- this cannot be set due to multi-arch support
+      check_mode: false
+
+    - name: copy archive to remote system
+      copy:
+        src: "/tmp/scanbd/{{ scanbd_version }}/scanbd-{{ scanbd_version }}.tgz"
+        dest: "/tmp/"
+        mode: 0755
+        owner: root
+        group: root
+
+    - name: extract archive
+      unarchive:
+        src: "/tmp/scanbd-{{ scanbd_version }}.tgz"
+        dest: /usr/src/scanbd
+        remote_src: true
+
+    - name: use patches to fix compiler errors
+      copy:
+        src: patches/directory.patch
+        dest: /usr/src/directory.patch
+        mode: 0644
+
+    - name: apply patch
+      command: |
+        patch --batch --context --ignore-whitespace --strip 0 --input directory.patch
+      args:
+        chdir: /usr/src
+        creates: /usr/src/.patched
+        removes: /usr/src/directory.patch
+
+    - name: configure
+      shell: |
+        cd /usr/src/scanbd/{{ scanbd_version }}
+        ./configure \
+          --with-user=saned \
+          --with-group=scanner \
+          --enable-udev
+
+    - name: build
+      shell: |
+        cd /usr/src/scanbd/{{ scanbd_version }}
+        make
+        make install
+
+    - name: remove build environment
+      package:
+        name: "{{ scanbd_build_dependencies }}"
+        state: absent
+
+  when:
+    - not __stat_present_scanbd.stat.exists
